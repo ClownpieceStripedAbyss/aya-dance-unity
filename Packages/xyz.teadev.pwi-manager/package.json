@@ -1,0 +1,24 @@
+{
+  "name": "xyz.teadev.pwi-manager",
+  "displayName": "PWI Manager",
+  "version": "1.0.0",
+  "author": {
+	"name": "Teacup",
+	"email": ""
+  },
+  "description": "A basic, sample implementation of the PWI system in VRCX ",
+  "url": "https://github.com/GroovyTeacup/PWIManager/",
+  "gitDependencies": {
+	  "com.unity.inputsystem" : "1.2.0"
+  },
+  "vpmDependencies": {
+	  "com.vrchat.worlds": "^3.1.x",
+	  "com.vrchat.udonsharp": "1.1.8"
+  },
+  "legacyFolders": {},
+  "legacyFiles": {},
+  "hideInEditor": false,
+  "license": "UNLICENSE",
+  "unity": "2019.4",
+  "localPath": ".\\Packages\\xyz.teadev.pwi-manager"
+}

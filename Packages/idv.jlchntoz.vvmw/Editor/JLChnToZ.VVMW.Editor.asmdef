@@ -1,0 +1,29 @@
+{
+    "name": "JLChnToZ.VVMW.Editor",
+    "references": [
+        "VRC.Udon",
+        "VRC.Udon.Editor",
+        "UdonSharp.Runtime",
+        "UdonSharp.Editor",
+        "UniTask",
+        "JLChnToZ.VVMW",
+        "com.vrchat.core.vpm-resolver.Editor"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [
+        {
+            "name": "com.vrchat.core.vpm-resolver",
+            "expression": "",
+            "define": "VPM_RESOLVER_INCLUDED"
+        }
+    ],
+    "noEngineReferences": false
+}

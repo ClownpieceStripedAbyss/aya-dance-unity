@@ -1,0 +1,20 @@
+{
+    "name": "JLChnToZ.VVMW",
+    "references": [
+        "Unity.TextMeshPro",
+        "VRC.Udon",
+        "UdonSharp.Runtime",
+        "VRC.Udon.Serialization.OdinSerializer",
+        "AudioLink",
+        "PWIManager"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": true,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
