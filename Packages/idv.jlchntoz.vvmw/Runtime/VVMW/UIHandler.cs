@@ -525,8 +525,16 @@ namespace JLChnToZ.VRC.VVMW {
 
         public void _OnRemoteReceiptsUpdated() {
             Debug.Log("=======================================");
-            Debug.Log($"UI Handler: Remote receipts updated, refreshing play list");
-            UpdatePlayList();
+            if (localIsRemoteReceiptAutoAccept) {
+                var awaitingReceipts = ComputeAwatingReceipts();
+                for (int i = 0; i < awaitingReceipts.Count; i++) {
+                    var receipt = ReceiptClient.ReceiptAtIndex(awaitingReceipts, i);
+                    AcceptReceipt(receipt, "automatically");
+                }
+            } else {
+                Debug.Log($"UI Handler: Remote receipts updated, refreshing play list");
+                UpdatePlayList();
+            }
             Debug.Log("=======================================");
         }
 
@@ -1352,11 +1360,17 @@ namespace JLChnToZ.VRC.VVMW {
             var approved = ReceiptClient.ReceiptAtIndex(localAwaitingReceipts, receiptIndex);
             if (approved == null) return; // race condition, just ignore
 
+            AcceptReceipt(approved, "manually");
+        }
+
+        public void AcceptReceipt(DataDictionary approved, string reason) {
+            if (remoteReceiptClient == null) return;
+            remoteReceiptClient.AcceptReceipt(approved);
+            Debug.Log($"UI Handler: Receipt accepted {reason}: {ReceiptClient.ReceiptToString(approved)}");
+            
             var song_id = ReceiptClient.ReceiptSongId(approved);
             var extraMessage = FormatReceiptMessage(approved);
-            remoteReceiptClient.AcceptReceipt(approved);
             handler.PlaySongById(song_id, extraMessage);
-            Debug.Log($"UI Handler: Receipt accepted manually: {ReceiptClient.ReceiptToString(approved)}");
         }
 
         public void _UpdateProgress() {
