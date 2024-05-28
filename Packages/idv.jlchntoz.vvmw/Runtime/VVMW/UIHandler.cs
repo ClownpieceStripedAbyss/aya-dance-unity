@@ -156,6 +156,10 @@ namespace JLChnToZ.VRC.VVMW {
         [SerializeField] VRCUrlInputField remoteReceiptApiUrlInput; 
         [SerializeField] Text remoteReceiptStatusText;
         [SerializeField] ReceiptClient remoteReceiptClient;
+        [BindEvent(nameof(Button.onClick), nameof(_RemoteReceiptAutoAcceptOn))]
+        [SerializeField] Button remoteReceiptAutoAcceptOnButton;
+        [BindEvent(nameof(Button.onClick), nameof(_RemoteReceiptAutoAcceptOff))]
+        [SerializeField] Button remoteReceiptAutoAcceptOffButton;
 
         private string KEY_ScreenFollow = "AyaScreenFollow";
         private string KEY_ScreenAdaptive = "AyaScreenAdaptive";
@@ -181,13 +185,14 @@ namespace JLChnToZ.VRC.VVMW {
         bool localIsVideoMirrored = false;
         bool localIsScreenFollowing = false;
         bool localIsScreenAdaptive = false;
+        DataList localAwaitingReceipts = new DataList();
+        bool localIsRemoteReceiptAutoAccept = false;
 
         string searchBoxBuffer = "";
         string[] videoListEntryTitles = new string[0];
         int[] videoListEntryIds = new int[0];
         
         bool onlyEmmmerAndKiva = false;
-        DataList localAwaitingReceipts = new DataList();
 
         // Since PlayList are moved to CategoryList, which is a separate ScrollView,
         // the SelectedPlayListIndex should also be 0.
@@ -483,6 +488,8 @@ namespace JLChnToZ.VRC.VVMW {
                         remoteReceiptStatusText.text = languageManager.GetLocale("RemoteReceipt");
                 }
             }
+            if (remoteReceiptAutoAcceptOnButton != null) remoteReceiptAutoAcceptOnButton.gameObject.SetActive(!localIsRemoteReceiptAutoAccept);
+            if (remoteReceiptAutoAcceptOffButton != null) remoteReceiptAutoAcceptOffButton.gameObject.SetActive(localIsRemoteReceiptAutoAccept);
         }
 
         public void _OnRemoteReceiptApiURLValueChanged() {
@@ -517,7 +524,20 @@ namespace JLChnToZ.VRC.VVMW {
         }
 
         public void _OnRemoteReceiptsUpdated() {
+            Debug.Log("=======================================");
+            Debug.Log($"UI Handler: Remote receipts updated, refreshing play list");
             UpdatePlayList();
+            Debug.Log("=======================================");
+        }
+
+        public void _RemoteReceiptAutoAcceptOn() {
+            localIsRemoteReceiptAutoAccept = true;
+            UpdateAdvancedSettinsUI();
+        }
+
+        public void _RemoteReceiptAutoAcceptOff() {
+            localIsRemoteReceiptAutoAccept = false;
+            UpdateAdvancedSettinsUI();
         }
 
         public string FormatReceiptMessage(DataDictionary receipt) {
@@ -1223,35 +1243,7 @@ namespace JLChnToZ.VRC.VVMW {
                 if (remoteReceiptClient == null) {
                     joined = queuedTitles;
                 } else {
-                    Debug.Log("=======================================");
-                    Debug.Log($"UI Handler: Remote receipts updated");
-                    var awaitingReceipts = new DataList();
-
-                    var receipts = remoteReceiptClient.GetReceipts();
-                    for (int i = 0; i < receipts.Count; i++) {
-                        var receipt = ReceiptClient.ReceiptAtIndex(receipts, i);
-                        var target = ReceiptClient.ReceiptTarget(receipt);
-                        if (!target.Equals(Networking.LocalPlayer.displayName))
-                            continue;
-
-                        var format = ReceiptClient.ReceiptToString(receipt);
-                        var accepted = remoteReceiptClient.ReceiptIsAlreadyAccepted(receipt);
-                        if (accepted) {
-                            Debug.Log($"Skipping already accepted receipt: {format}");
-                            continue;
-                        }
-
-                        // TODO: support song url
-                        var song_id = ReceiptClient.ReceiptSongId(receipt);
-                        var try_song_offset = handler.SongIdToOffset(song_id);
-                        if (try_song_offset == -1) {
-                            Debug.Log($"Skipping non-existing song in receipt: {format}");
-                            continue;
-                        }
-                        awaitingReceipts.Add(receipt);
-                    }
-                    Debug.Log("=======================================");
-                    
+                    var awaitingReceipts = ComputeAwatingReceipts();
                     // Ok, apply local receipts to the queue list
                     joined = new string[queuedTitles.Length + awaitingReceipts.Count];
                     Array.Copy(queuedTitles, 0, joined, 0, queuedTitles.Length);
@@ -1281,6 +1273,37 @@ namespace JLChnToZ.VRC.VVMW {
             }
             if (isNotCoolingDown) queueListScrollView.ScrollToSelected();
             return true;
+        }
+
+        public DataList ComputeAwatingReceipts() {
+            var awaitingReceipts = new DataList();
+            if (remoteReceiptClient == null) return awaitingReceipts;
+
+            var receipts = remoteReceiptClient.GetReceipts();
+            for (int i = 0; i < receipts.Count; i++) {
+                var receipt = ReceiptClient.ReceiptAtIndex(receipts, i);
+                var target = ReceiptClient.ReceiptTarget(receipt);
+                if (!target.Equals(Networking.LocalPlayer.displayName))
+                    continue;
+
+                var format = ReceiptClient.ReceiptToString(receipt);
+                var accepted = remoteReceiptClient.ReceiptIsAlreadyAccepted(receipt);
+                if (accepted) {
+                    Debug.Log($"Skipping already accepted receipt: {format}");
+                    continue;
+                }
+
+                // TODO: support song url
+                var song_id = ReceiptClient.ReceiptSongId(receipt);
+                var try_song_offset = handler.SongIdToOffset(song_id);
+                if (try_song_offset == -1) {
+                    Debug.Log($"Skipping non-existing song in receipt: {format}");
+                    continue;
+                }
+
+                awaitingReceipts.Add(receipt);
+            }
+            return awaitingReceipts;
         }
 
         public void _OnPlayListEntryClick() {
