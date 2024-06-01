@@ -940,7 +940,7 @@ namespace JLChnToZ.VRC.VVMW {
 
                     // Apply initial suggested volume to the video,
                     // but respect user's manual setting for this video.
-                    if (!userChangedVolume) core.Volume = (float) volume;
+                    if (!userChangedVolume) core.Volume = (float) volume * 2.0f;
 
                     if (currentVideoTitleText != null) {
                         currentVideoTitleText.text = textInTitle;
