@@ -83,6 +83,7 @@ Shader "Kiva/MirrorFlipText"
                 float2 uv = v.uv;
 
                 v2f o;
+                if (_VRChatMirrorMode > 0) v.vertex.x *= -1;
                 o.vertex = UnityObjectToClipPos(v.vertex);
                 o.uv = TRANSFORM_TEX(uv, _MainTex);
                 o.color = v.color * _Color;
@@ -93,10 +94,6 @@ Shader "Kiva/MirrorFlipText"
             fixed4 frag (v2f i) : SV_Target
             {
                 float2 uv = i.uv;
-                // float2 uv = i.uv.xy / _MainTex_TexelSize.zw;
-                // uv = lerp(uv, float2(1.0 - uv.x, uv.y), _VRChatMirrorMode);
-                // uv.xy *= _MainTex_TexelSize.zw;
-
                 fixed4 col = (tex2D(_MainTex, uv) + _TextureSampleAdd) * i.color;
                 return col;
             }
