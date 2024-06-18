@@ -312,7 +312,7 @@ namespace JLChnToZ.VRC.VVMW {
               playListEntryEnds[offset] = end;
               playListEntryVolumes[offset] = volume;
               playListEntryFlips[offset] = flip;
-              playListPlayerIndex[offset] = (byte) playerIndex;
+              playListPlayerIndex[offset] = (byte) (playerIndex + 1);
 
               offset += 1;
             }
@@ -931,8 +931,8 @@ namespace JLChnToZ.VRC.VVMW {
                 // var url = PlayListUrls[offset];
                 var url = SongUrlById(id, VRCUrl.Empty);
                 var title = PlayListEntryTitles[offset];
-                // var flip = PlayListEntryFlips[offset];
-                PlayUrl(url, 1, title, id, extraMessage);
+                var index = PlayListPlayerIndex[offset];
+                PlayUrl(url, index, title, id, extraMessage);
             }
         }
 
