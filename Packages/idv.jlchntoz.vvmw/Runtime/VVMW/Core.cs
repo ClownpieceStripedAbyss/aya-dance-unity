@@ -864,6 +864,7 @@ namespace JLChnToZ.VRC.VVMW {
             var duration = activeHandler.Duration;
             if (duration <= 0 || float.IsInfinity(duration)) {
                 isResyncTime = false;
+                RequestSerialization();
                 return;
             }
             SyncTime();
