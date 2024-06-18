@@ -64,56 +64,6 @@ Shader "Kiva/MirrorFlipText"
             float4 _MainTex_ST;
             half4 _MainTex_TexelSize;
 
-            // struct appdata_t
-            // {
-            //     float4 vertex   : POSITION;
-            //     float4 color    : COLOR;
-            //     float2 texcoord : TEXCOORD0;
-            //     UNITY_VERTEX_INPUT_INSTANCE_ID
-            // };
-
-            // struct v2f
-            // {
-            //     float4 vertex   : SV_POSITION;
-            //     fixed4 color    : COLOR;
-            //     float2 texcoord  : TEXCOORD0;
-            //     float4 worldPosition : TEXCOORD1;
-            //     UNITY_VERTEX_OUTPUT_STEREO
-            // };
-
-            // v2f vert(appdata_t v)
-            // {
-            //     v2f OUT;
-            //     UNITY_SETUP_INSTANCE_ID(v);
-            //     UNITY_INITIALIZE_VERTEX_OUTPUT_STEREO(OUT);
-
-            //     if (_VRChatMirrorMode) {
-            //         v.texcoord.x = 1 - v.texcoord.x;
-            //     }
-
-            //     OUT.worldPosition = v.vertex;
-            //     OUT.vertex = UnityObjectToClipPos(OUT.worldPosition);
-            //     OUT.texcoord = TRANSFORM_TEX(v.texcoord, _MainTex);
-            //     OUT.color = v.color * _Color;
-
-            //     return OUT;
-            // }
-
-            // fixed4 frag(v2f IN) : SV_Target
-            // {
-            //     half4 color = (tex2D(_MainTex, IN.texcoord) + _TextureSampleAdd) * IN.color;
-
-            //     #ifdef UNITY_UI_CLIP_RECT
-            //     color.a *= UnityGet2DClipping(IN.worldPosition.xy, _ClipRect);
-            //     #endif
-
-            //     #ifdef UNITY_UI_ALPHACLIP
-            //     clip (color.a - 0.001);
-            //     #endif
-
-            //     return color;
-            // }
-
             struct appdata
             {
                 float4 vertex : POSITION;
@@ -142,10 +92,10 @@ Shader "Kiva/MirrorFlipText"
 
             fixed4 frag (v2f i) : SV_Target
             {
-                // float2 uv = v.uv;
-                float2 uv = i.uv.xy / _MainTex_TexelSize.zw;
+                float2 uv = i.uv;
+                // float2 uv = i.uv.xy / _MainTex_TexelSize.zw;
                 // uv = lerp(uv, float2(1.0 - uv.x, uv.y), _VRChatMirrorMode);
-                uv.xy *= _MainTex_TexelSize.zw;
+                // uv.xy *= _MainTex_TexelSize.zw;
 
                 fixed4 col = (tex2D(_MainTex, uv) + _TextureSampleAdd) * i.color;
                 return col;
