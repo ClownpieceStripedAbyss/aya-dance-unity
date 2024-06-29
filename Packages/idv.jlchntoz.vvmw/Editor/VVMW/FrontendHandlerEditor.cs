@@ -97,7 +97,7 @@ namespace JLChnToZ.VRC.VVMW.Editors {
             }
             if (GUILayout.Button("Generate Song Index URL")) {
                 var songIndexUrl = serializedObject.FindProperty("songIndexUrl");
-                songIndexUrl.FindPropertyRelative("url").stringValue = "https://aya-dance.kiva.moe/aya-api/v1/songs";
+                songIndexUrl.FindPropertyRelative("url").stringValue = "https://aya-dance-cf.kiva.moe/aya-api/v1/songs";
                 serializedObject.ApplyModifiedProperties();
             }
             var rect = GUILayoutUtility.GetRect(0, EditorGUIUtility.singleLineHeight);

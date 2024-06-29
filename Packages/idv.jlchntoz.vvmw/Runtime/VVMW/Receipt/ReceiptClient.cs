@@ -9,7 +9,7 @@ using VRC.Udon.Common.Interfaces;
 
 public class ReceiptClient : UdonSharpBehaviour
 {
-    public VRCUrl defaultReceiptApiUrlPrefix = new VRCUrl("https://aya-dance-cf.kiva.moe/r/ad-");
+    public VRCUrl defaultReceiptApiUrlPrefix = new VRCUrl("https://aya-dance.kiva.moe/r/ad-");
 
     [NonSerialized]
     private VRCUrl getReceiptUrl = VRCUrl.Empty;
